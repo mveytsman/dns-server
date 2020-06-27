@@ -1,3 +1,7 @@
+# Our nix-managed Elixir dependencies
+/.nix-hex/
+/.nix-mix/
+
 # The directory Mix will write compiled artifacts to.
 /_build/
 
