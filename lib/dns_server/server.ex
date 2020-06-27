@@ -1,6 +1,8 @@
 defmodule DnsServer.Server do
   use GenServer
 
+  alias DnsServer.Message
+
   require Logger
 
   # Client
@@ -20,8 +22,7 @@ defmodule DnsServer.Server do
 
   @imple true
   def handle_info({:udp, _socket, _address, _port, data}, state) do
-    Logger.info(data)
+    Logger.info(inspect Message.parse(data))
     {:noreply, state}
   end
-
 end
