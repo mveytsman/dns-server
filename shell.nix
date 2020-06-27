@@ -1,7 +1,7 @@
 with (import <nixpkgs> { });
 mkShell {
   name = "mc-hammer";
-  buildInputs = [elixir_1_10];
+  buildInputs = [elixir_1_10 dnsutils];
   shellHook = ''
     mkdir -p .nix-mix
     mkdir -p .nix-hex
