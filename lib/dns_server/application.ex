@@ -7,8 +7,7 @@ defmodule DnsServer.Application do
 
   def start(_type, _args) do
     children = [
-      # Starts a worker by calling: DnsServer.Worker.start_link(arg)
-      # {DnsServer.Worker, arg}
+      {DnsServer.Server, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
