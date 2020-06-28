@@ -20,9 +20,9 @@ defmodule DnsServer.Server do
     {:ok, Map.put(state, :socket, socket)}
   end
 
-  @imple true
+  @impl true
   def handle_info({:udp, _socket, _address, _port, data}, state) do
-    Logger.info(inspect Message.parse(data))
+    Logger.info(inspect Message.parse_message(data))
     {:noreply, state}
   end
 end
