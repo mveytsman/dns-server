@@ -145,12 +145,13 @@ defmodule DnsServer.Message do
     %{parser | name_pointers: Map.put(name_pointers, offset, name)}
   end
 
-  def get_name(%Parser{name_pointers: name_pointers}, offset) do
-    unless Map.has_key?(name_pointers, offset) do
-      raise "key not found"
+  def get_name(%Parser{name_pointers: name_pointers}=parser, offset) do
+    if Map.has_key?(name_pointers, offset) do
+      name_pointers[offset]
+    else
+      "wtf"
     end
 
-    name_pointers[offset]
   end
 
   def parse_name(%Parser{offset: offset} = parser), do: parse_name(parser, [], offset)
@@ -174,20 +175,19 @@ defmodule DnsServer.Message do
   # Pointer
   def parse_name(
         %Parser{
-          bytes: <<3::2, ptr::6, rst::bitstring>>,
+          bytes: <<3::2, ptr::14, rst::bitstring>>,
           offset: offset
         } = parser,
         labels,
         initial_offset
       ) do
-    final_offset = offset + 8
-    labels = labels ++ get_name(parser, ptr)
+    final_offset = offset + 16
+    labels = labels ++ [get_name(parser, ptr)]
     name = Enum.join(labels, ".")
 
     parser =
       %{parser | bytes: rst, offset: final_offset}
       |> cache_name(name, initial_offset)
-
     {name, parser}
   end
 
@@ -210,6 +210,7 @@ defmodule DnsServer.Message do
   def parse_answers(%Parser{} = parser, 0), do: parser
 
   def parse_answers(%Parser{} = parser, num_answers) do
+
     {resouce_record, parser} = parse_resource_record(parser)
     parser = update_in(parser.message.answers, &(&1 ++ [resouce_record]))
     parse_answers(parser, num_answers - 1)
